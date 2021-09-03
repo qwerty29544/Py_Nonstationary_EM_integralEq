@@ -4,7 +4,13 @@ import numba
 
 # Префикс компилятора питона numba
 @numba.jit(nopython=True, parallel=True, nogil=True)
-def integrate_func(collocation, frame, n_vertex, num_slices, integral_function, ndim, *args):
+def integrate_func(collocation,
+                   frame,
+                   n_vertex,
+                   num_slices,
+                   integral_function,
+                   ndim,
+                   *args):
     res = np.zeros(ndim)
     for i in range(num_slices):
         for j in range(num_slices):

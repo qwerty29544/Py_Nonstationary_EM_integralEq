@@ -1,5 +1,5 @@
-import integral
-import G_functions
+import src.integral as integral
+import src.G_functions as G_functions
 import numpy as np
 
 def test_integrate_func_G1():

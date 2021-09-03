@@ -1,5 +1,7 @@
 import numpy as np
 import numba
+from G3_integral import integr_G3
+from G_functions import G3_func
 
 
 # Префикс компилятора питона numba
@@ -13,16 +15,16 @@ def compute_coeffs(frame,                   # Все рамки объекта �
                    ndim,                    # Размерность вектора результата
                    n_vertex=4,              # Количество углов у фигуры разбиения
                    num_slices=10,           # Количество подразбиений для внедиагональных элементов
-                   num_slices_diag=50):     # Количество подразбиений для диагональных элементов
+                   num_slices_diag=5):     # Количество подразбиений для диагональных элементов
     rb = max_diameter / num_slices          # Epsilon - коэффициент для сглаживающей функции
-    colloc = np.zeros((number_of_frames, number_of_frames, ndim))   # Массив для коэффициентов (N x N x ndim)
+    coeffs = np.zeros((number_of_frames, number_of_frames, ndim))   # Массив для коэффициентов (N x N x ndim)
     for i in range(number_of_frames):
         for j in range(number_of_frames):
             if i == j:
                 slices = num_slices_diag    # Если точка коллокации в рамке - num_slices_diag разбиений
             else:
                 slices = num_slices         # Если точка коллокации вне рамки - num_slices разбиений
-            colloc[i][j] = integration_method(collocation[i],
+            coeffs[i][j] = integration_method(collocation[i],
                                               frame[j],
                                               n_vertex,
                                               slices,
@@ -30,7 +32,28 @@ def compute_coeffs(frame,                   # Все рамки объекта �
                                               ndim,
                                               rb)
 
-    return colloc
+    return coeffs
+
+
+@numba.jit(nopython=True, parallel=True, nogil=True)
+def compute_G3_coefficients(frame,                   # Все рамки объекта в формате (N x 4 x 3) - массив numpy
+                   collocation,             # Все точки коллокации объекта в формате (N x 3) - массив numpy
+                   number_of_frames,        # Общее количество разбиений объекта - число
+                   integration_method,      # Метод интегрирования (доразбиения)
+                   max_diameter,            # Максимальный диаметр разбиения на объекте
+                   n_vertex=4,              # Количество углов у фигуры разбиения
+                   num_slices=10):          # Количество подразбиений для внедиагональных элементов
+    rb = max_diameter / num_slices          # Epsilon - коэффициент для сглаживающей функции
+    coeffs = np.zeros((number_of_frames, number_of_frames, 1))   # Массив для коэффициентов (N x N x ndim)
+    slices = num_slices
+    for i in range(number_of_frames):
+        for j in range(number_of_frames):
+            if i == j:
+                coeffs[i][j] = integr_G3(frame[j], collocation[i], j, i)
+            else:
+                coeffs[i][j] = integration_method(collocation[i], frame[j], n_vertex, slices, G3_func, 1, rb)
+    coeffs.reshape((number_of_frames, number_of_frames))
+    return coeffs
 
 
 def coeffs_save(coeffs, filename):
