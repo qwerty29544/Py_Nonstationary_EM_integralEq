@@ -7,7 +7,7 @@ def f_function(rho, D):
         return 0
     if np.abs(1 / rho * (D - rho)) >= 20:
         return 0
-    if rho < D and rho > 0:
+    if D > rho > 0:
         return np.exp(-((1) / (rho * (D - rho))))
     else:
         return 0
@@ -199,7 +199,7 @@ class Charge:
         f.write(str(self.total_number_of_frames) + "\n")
         for i in range(self.total_number_of_frames):
             f.write("\t".join(map(str, tensor[i])) + "\n")
-        f.close
+        f.close()
 
     def step_in_time(self):
         # Подсчитать S -> подсчитать P(x(j), t(n) - tau(i,j), Q(x(j), t(n) - tau(i,j), D(x(j), t(n) - tau(i,j)

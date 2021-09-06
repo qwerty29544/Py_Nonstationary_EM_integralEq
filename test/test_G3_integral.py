@@ -1,5 +1,5 @@
 import numpy as np
-from src.G3_integral import integr_G3
+from src.G_functions import integr_G3
 
 
 def test_integr_g3():

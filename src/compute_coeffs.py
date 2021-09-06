@@ -1,7 +1,6 @@
 import numpy as np
 import numba
-from G3_integral import integr_G3
-from G_functions import G3_func
+from G_functions import G3_func, integr_G3
 
 
 # Префикс компилятора питона numba

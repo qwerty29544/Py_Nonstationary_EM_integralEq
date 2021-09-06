@@ -5,7 +5,7 @@ def frame_center(frames):
     manual_shape = 2                # Размерность массива рамки как минимум Ndim = 2
     len_shape = len(frames.shape)   # Размерность входного массива рамок
     if len_shape < manual_shape:    # Проверка размерности входного массива
-        return None
+        return np.zeros((frames.shape[0], 3))
     center = np.mean(frames, len_shape - manual_shape)  # Вычисление массива центров рамок
     return center
 
@@ -36,6 +36,7 @@ class Figure:
         self.max_diameter = []
         self.min_R = []
 
+        # Вызов функции подстчёта данных величин
         self._TQPR_norms_squares_colloc_calc_()
         self._max_diameter_()
         self._min_R_colloc_()
@@ -43,6 +44,8 @@ class Figure:
         # Можно считать и не хранить это Г*****
         self.collocation_distances = []
         self._colloc_dist_compute_()
+
+        self.neighbours = []
 
     def _read_file_(self, filename):
         f = open(filename, "r")
@@ -210,6 +213,36 @@ class Figure:
                 coll_in_obj.append(range_between)
             coll_dist_obj.append(np.array(coll_in_obj))
         self.collocation_distances = coll_dist_obj
+
+    # Нахождение соседей по разбиениям
+    def _neighbours_find_(self):
+        brothers = []
+        for obj in range(self.number_of_objects):
+            neighbours_in_obj = np.zeros((self.total_frames_in_objects[obj], 4))
+            for frame in range(self.total_frames_in_objects[obj]):
+                fl = np.zeros(4)
+                for j in range(self.total_frames_in_objects[obj]):
+                    if ((self.frames[obj][frame][0] == self.frames[obj][j][3]) and
+                            (self.frames[obj][frame][1] == self.frames[obj][j][2])):
+                        neighbours_in_obj[frame][0] = j
+                        fl[0] = 1
+                    if ((self.frames[obj][frame][1] == self.frames[obj][j][0]) and
+                            (self.frames[obj][frame][2] == self.frames[obj][j][3])):
+                        neighbours_in_obj[frame][1] = j
+                        fl[1] = 1
+                    if ((self.frames[obj][frame][2] == self.frames[obj][j][1]) and
+                            (self.frames[obj][frame][3] == self.frames[obj][j][0])):
+                        neighbours_in_obj[frame][2] = j
+                        fl[2] = 1
+                    if ((self.frames[obj][frame][3] == self.frames[obj][j][2]) and
+                            (self.frames[obj][frame][0] == self.frames[obj][j][1])):
+                        neighbours_in_obj[frame][3] = j
+                        fl[3] = 1
+                    if (np.prod(fl) == 1):
+                        break
+            brothers.append(neighbours_in_obj)
+        self.neighbours = brothers
+
 
     def print_details(self):
         print("|| -----------------------------------------------------||\n")

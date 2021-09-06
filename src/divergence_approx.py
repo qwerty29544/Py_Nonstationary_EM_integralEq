@@ -1,6 +1,4 @@
 import numpy as np
-import math
-
 
 def div_vec_approx(collocation,         # Точка коллокации  x[3]
                    vec_collocation,     # Значение вектора под дивергенцией в точке коллокации gx[3]
@@ -34,12 +32,12 @@ def gradient_vec(x,                     # Точка коллокации кот
         grad = np.zeros(3)
     else:
         if appr_degree == 1:
-            grad = -2 * x_y * np.exp(-r_2) / math.pi / (eps**4)
+            grad = -2 * x_y * np.exp(-r_2) / np.pi / (eps**4)
         elif appr_degree == 2:
-            grad = (-6 + 2 * r_2) * (x_y) * np.exp(-r_2) / math.pi / (eps**4)
+            grad = (-6 + 2 * r_2) * (x_y) * np.exp(-r_2) / np.pi / (eps**4)
         elif appr_degree == 3:
-            grad = (-12 + 8 * r_2 - (r_2) ** 2) * (x_y) * np.exp(-r_2) / math.pi / (eps ** 4)
+            grad = (-12 + 8 * r_2 - (r_2) ** 2) * (x_y) * np.exp(-r_2) / np.pi / (eps ** 4)
         else:
-            grad = (-20 + 20 * r_2 - 5 * ((r_2)**2) + ((r_2)**3) / 3) * (x_y) * np.exp(-r_2) / math.pi / (eps**4)
+            grad = (-20 + 20 * r_2 - 5 * ((r_2)**2) + ((r_2)**3) / 3) * (x_y) * np.exp(-r_2) / np.pi / (eps**4)
 
     return grad
