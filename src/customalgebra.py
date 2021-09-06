@@ -42,15 +42,15 @@ def resize_matrix(point):
 @numba.jit(nopython=True, parallel=True, nogil=True)
 def rot_matrix(theta, c):
     result = np.zeros((4, 4))
-    result[0, 0] = np.cos(theta) + (c[0]**2) * (1 - np.cos(theta))
+    result[0, 0] = np.cos(theta) + (c[0] ** 2) * (1 - np.cos(theta))
     result[0, 1] = c[0] * c[1] * (1 - np.cos(theta)) - c[2] * np.sin(theta)
     result[0, 2] = c[0] * c[2] * (1 - np.cos(theta)) + c[1] * np.sin(theta)
     result[1, 0] = c[0] * c[1] * (1 - np.cos(theta)) + c[2] * np.sin(theta)
-    result[1, 1] = np.cos(theta) + (c[1]**2) * (1 - np.cos(theta))
+    result[1, 1] = np.cos(theta) + (c[1] ** 2) * (1 - np.cos(theta))
     result[1, 2] = c[1] * c[2] * (1 - np.cos(theta)) - c[0] * np.sin(theta)
     result[2, 0] = c[0] * c[2] * (1 - np.cos(theta)) - c[1] * np.sin(theta)
     result[2, 1] = c[1] * c[2] * (1 - np.cos(theta)) + c[0] * np.sin(theta)
-    result[2, 2] = np.cos(theta) + (c[2]**2) * (1 - np.cos(theta))
+    result[2, 2] = np.cos(theta) + (c[2] ** 2) * (1 - np.cos(theta))
     result[3, 3] = 1
     return result
 

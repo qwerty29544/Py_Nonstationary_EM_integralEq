@@ -36,19 +36,19 @@ def compute_coeffs(frame,                   # Все рамки объекта �
 
 @numba.jit(nopython=True, parallel=True, nogil=True)
 def compute_G3_coefficients(frame,                   # Все рамки объекта в формате (N x 4 x 3) - массив numpy
-                   collocation,             # Все точки коллокации объекта в формате (N x 3) - массив numpy
-                   number_of_frames,        # Общее количество разбиений объекта - число
-                   integration_method,      # Метод интегрирования (доразбиения)
-                   max_diameter,            # Максимальный диаметр разбиения на объекте
-                   n_vertex=4,              # Количество углов у фигуры разбиения
-                   num_slices=10):          # Количество подразбиений для внедиагональных элементов
+                            collocation,             # Все точки коллокации объекта в формате (N x 3) - массив numpy
+                            number_of_frames,        # Общее количество разбиений объекта - число
+                            integration_method,      # Метод интегрирования (доразбиения)
+                            max_diameter,            # Максимальный диаметр разбиения на объекте
+                            n_vertex=4,              # Количество углов у фигуры разбиения
+                            num_slices=10):          # Количество подразбиений для внедиагональных элементов
     rb = max_diameter / num_slices          # Epsilon - коэффициент для сглаживающей функции
     coeffs = np.zeros((number_of_frames, number_of_frames, 1))   # Массив для коэффициентов (N x N x ndim)
     slices = num_slices
     for i in range(number_of_frames):
         for j in range(number_of_frames):
             if i == j:
-                coeffs[i][j] = integr_G3(frame[j], collocation[i], j, i)
+                coeffs[i][j] = -1 * integr_G3(frame[j], collocation[i], j, i) / (3 * 1e08)**2
             else:
                 coeffs[i][j] = integration_method(collocation[i], frame[j], n_vertex, slices, G3_func, 1, rb)
     coeffs.reshape((number_of_frames, number_of_frames))

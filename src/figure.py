@@ -46,6 +46,7 @@ class Figure:
         self._colloc_dist_compute_()
 
         self.neighbours = []
+        self._neighbours_find_()
 
     def _read_file_(self, filename):
         f = open(filename, "r")
@@ -222,20 +223,20 @@ class Figure:
             for frame in range(self.total_frames_in_objects[obj]):
                 fl = np.zeros(4)
                 for j in range(self.total_frames_in_objects[obj]):
-                    if ((self.frames[obj][frame][0] == self.frames[obj][j][3]) and
-                            (self.frames[obj][frame][1] == self.frames[obj][j][2])):
+                    if ((np.all(self.frames[obj][frame][0] == self.frames[obj][j][3])) and
+                            (np.all(self.frames[obj][frame][1] == self.frames[obj][j][2]))):
                         neighbours_in_obj[frame][0] = j
                         fl[0] = 1
-                    if ((self.frames[obj][frame][1] == self.frames[obj][j][0]) and
-                            (self.frames[obj][frame][2] == self.frames[obj][j][3])):
+                    if ((np.all(self.frames[obj][frame][1] == self.frames[obj][j][0])) and
+                            (np.all(self.frames[obj][frame][2] == self.frames[obj][j][3]))):
                         neighbours_in_obj[frame][1] = j
                         fl[1] = 1
-                    if ((self.frames[obj][frame][2] == self.frames[obj][j][1]) and
-                            (self.frames[obj][frame][3] == self.frames[obj][j][0])):
+                    if ((np.all(self.frames[obj][frame][2] == self.frames[obj][j][1])) and
+                            (np.all(self.frames[obj][frame][3] == self.frames[obj][j][0]))):
                         neighbours_in_obj[frame][2] = j
                         fl[2] = 1
-                    if ((self.frames[obj][frame][3] == self.frames[obj][j][2]) and
-                            (self.frames[obj][frame][0] == self.frames[obj][j][1])):
+                    if ((np.all(self.frames[obj][frame][3] == self.frames[obj][j][2])) and
+                            (np.all(self.frames[obj][frame][0] == self.frames[obj][j][1]))):
                         neighbours_in_obj[frame][3] = j
                         fl[3] = 1
                     if (np.prod(fl) == 1):
