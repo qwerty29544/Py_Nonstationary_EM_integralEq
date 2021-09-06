@@ -218,7 +218,7 @@ class Figure:
     def _neighbours_find_(self):
         brothers = []
         for obj in range(self.number_of_objects):
-            neighbours_in_obj = np.zeros((self.total_frames_in_objects[obj], 4))
+            neighbours_in_obj = np.zeros((self.total_frames_in_objects[obj], 4)) - 1
             for frame in range(self.total_frames_in_objects[obj]):
                 fl = np.zeros(4)
                 for j in range(self.total_frames_in_objects[obj]):
