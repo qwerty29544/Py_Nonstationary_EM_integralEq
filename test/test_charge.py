@@ -1,5 +1,6 @@
 import src.charge as charge
 import numpy as np
+import os
 
 
 def test_f_function():

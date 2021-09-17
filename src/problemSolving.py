@@ -181,9 +181,6 @@ def component_next_adams5(vec_integral: np.array = None,
                               adams_bashforth5_c4 * vec_integral_4)
 
 
-
-
-
 class ProblemSolving:
     # ------------------------------------------------------------------------------------------
     number_of_frames: int  # Количество разбиений объекта
@@ -567,3 +564,11 @@ class ProblemSolving:
             self.D = np.concatenate((self.D, new_D.reshape((self.number_of_frames, 3))), axis=1)
 
         self.time_current_inc()
+
+    def step(self):
+        time = self.timeline[self._time_current_]
+        f_vec = np.zeros((self.number_of_frames, 3))
+        for i in range(self.number_of_frames):
+            coord = self.collocations[i][2]
+            f_vec[i] = np.cross(self.orientation * self.free_function((speed_of_light * time - coord, 1)), self.norms[i])
+

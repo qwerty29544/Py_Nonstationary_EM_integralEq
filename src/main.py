@@ -9,27 +9,54 @@ import charge
 # Press the green button in the gutter to run the script.
 if __name__ == '__main__':
     # Считывание данных
-    figure_sphere = figure.Figure("d:\\Python\\Py_Nonstationary_EM_integralEq\\figures\\sphere.dat")
-    G3_coeff = compute_coeffs.compute_G3_coefficients(frame = figure_sphere.frames[0],
-                                                      collocation=figure_sphere.collocations[0],
-                                                      number_of_frames=figure_sphere.total_frames_in_objects[0],
+    # figure_sphere = figure.Figure("d:\\Python\\Py_Nonstationary_EM_integralEq\\figures\\sphere.dat")
+    # G3_coeff = compute_coeffs.compute_G3_coefficients(frame = figure_sphere.frames[0],
+    #                                                   collocation=figure_sphere.collocations[0],
+    #                                                   number_of_frames=figure_sphere.total_frames_in_objects[0],
+    #                                                   integration_method=integrate_func,
+    #                                                   max_diameter=figure_sphere.max_diameter[0],
+    #                                                   n_vertex=4,
+    #                                                   num_slices=4)
+    # print("one axis")
+    # print(np.sum(G3_coeff, axis=1) * (-1) * (9e16))
+    # print("zero axis")
+    # print(np.sum(G3_coeff, axis=0) * (-1) * (9e16))
+
+    figure_plate_40_40 = figure.Figure("c:\\Users\\MariaRemark\\PycharmProjects\\Py_Nonstationary_EM_integralEq\\figures\\plate_40_40.dat")
+
+    G1_coeff = compute_coeffs.compute_coeffs(frame=figure_plate_40_40.frames[0],
+                                             collocation=figure_plate_40_40.collocations[0],
+                                             number_of_frames=figure_plate_40_40.total_frames_in_objects[0],
+                                             integration_method=integrate_func,
+                                             integral_function=G_functions.G1_func,
+                                             max_diameter=figure_plate_40_40.max_diameter[0],
+                                             ndim=3, n_vertex=4, num_slices=4)
+    G2_coeff = compute_coeffs.compute_coeffs(frame=figure_plate_40_40.frames[0],
+                                             collocation=figure_plate_40_40.collocations[0],
+                                             number_of_frames=figure_plate_40_40.total_frames_in_objects[0],
+                                             integration_method=integrate_func,
+                                             integral_function=G_functions.G2_func,
+                                             max_diameter=figure_plate_40_40.max_diameter[0],
+                                             ndim=3, n_vertex=4, num_slices=4)
+    G3_coeff = compute_coeffs.compute_G3_coefficients(frame=figure_plate_40_40.frames[0],
+                                                      collocation=figure_plate_40_40.collocations[0],
+                                                      number_of_frames=figure_plate_40_40.total_frames_in_objects[0],
                                                       integration_method=integrate_func,
-                                                      max_diameter=figure_sphere.max_diameter[0],
+                                                      max_diameter=figure_plate_40_40.max_diameter[0],
                                                       n_vertex=4,
                                                       num_slices=4)
-    print("one axis")
-    print(np.sum(G3_coeff, axis=1) * (-1) * (9e16))
-    print("zero axis")
-    print(np.sum(G3_coeff, axis=0) * (-1) * (9e16))
-
-    # figure_plate_40_40 = figure.Figure("d:\\Python\\MaxwellIntegralEq\\figures\\plate_12_12.dat")
-    #
+    compute_coeffs.coeffs_save(coeffs=G1_coeff,
+                               filename="c:\\Users\\MariaRemark\\PycharmProjects\\Py_Nonstationary_EM_integralEq\\coeffs\\G1_coeffs.txt")
+    compute_coeffs.coeffs_save(coeffs=G2_coeff,
+                               filename="c:\\Users\\MariaRemark\\PycharmProjects\\Py_Nonstationary_EM_integralEq\\coeffs\\G2_coeffs.txt")
+    compute_coeffs.coeffs_save(coeffs=G3_coeff,
+                               filename="c:\\Users\\MariaRemark\\PycharmProjects\\Py_Nonstationary_EM_integralEq\\coeffs\\G3_coeffs.txt")
     # # Загрузка коэффициентов
     # G1_load = compute_coeffs.coeffs_load("d:\\Python\\MaxwellIntegralEq\\coeffs\\plate_12_12\\G1_plate_12_12.txt")
     # G2_load = compute_coeffs.coeffs_load("d:\\Python\\MaxwellIntegralEq\\coeffs\\plate_12_12\\G2_plate_12_12.txt")
     # G3_load = compute_coeffs.coeffs_load("d:\\Python\\MaxwellIntegralEq\\coeffs\\plate_12_12\\G3_plate_12_12.txt")
     # G3_load = G3_load.reshape((G3_load.shape[0], G3_load.shape[1]))
-    # # Шаг по времени
+    # Шаг по времени
     # curant_ts = figure_plate_40_40.get_Curant() / 6
     # # Максимальное время
     # max_time = 3 / (3*1e8)
