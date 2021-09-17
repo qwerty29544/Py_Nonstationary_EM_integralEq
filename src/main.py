@@ -9,17 +9,18 @@ import charge
 # Press the green button in the gutter to run the script.
 if __name__ == '__main__':
     # Считывание данных
-    figure_cyl = figure.Figure("d:\\Python\\Py_Nonstationary_EM_integralEq\\figures\\cyl_20_20_20_20_8.dat")
-    figure_cyl.print_details()
-    print(figure_cyl.neighbours[0][21])
-    print(figure_cyl.frames[0][21])
-    for i in figure_cyl.neighbours[0][21]:
-        if (int(i) != -1):
-            print(figure_cyl.frames[0][int(i)])
-        else:
-            print("...................")
-            print("...................")
-            print("...................")
+    figure_sphere = figure.Figure("d:\\Python\\Py_Nonstationary_EM_integralEq\\figures\\sphere.dat")
+    G3_coeff = compute_coeffs.compute_G3_coefficients(frame = figure_sphere.frames[0],
+                                                      collocation=figure_sphere.collocations[0],
+                                                      number_of_frames=figure_sphere.total_frames_in_objects[0],
+                                                      integration_method=integrate_func,
+                                                      max_diameter=figure_sphere.max_diameter[0],
+                                                      n_vertex=4,
+                                                      num_slices=4)
+    print("one axis")
+    print(np.sum(G3_coeff, axis=1) * (-1) * (9e16))
+    print("zero axis")
+    print(np.sum(G3_coeff, axis=0) * (-1) * (9e16))
 
     # figure_plate_40_40 = figure.Figure("d:\\Python\\MaxwellIntegralEq\\figures\\plate_12_12.dat")
     #

@@ -56,7 +56,7 @@ class Charge:
         self.D = np.zeros((self.total_number_of_frames, 1, 3))
 
         # Индексная зависимость массивов Q, P, D в каждой точке коллокации
-        self.indexes_upper = np.array(self.tau / time_step, dtype='int32')
+        self.indexes_upper = np.array(np.ceil(self.tau / time_step), dtype='int32')
         self.indexes_lower = self.indexes_upper + 1
 
         self.current_time = 1  # Текущий счётчик индекса времени
