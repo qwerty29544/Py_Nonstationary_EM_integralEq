@@ -268,15 +268,15 @@ class Charge:
         new_P = []
         for i in range(self.total_number_of_frames):
             # Дивергенция на каждой точке коллокации возвращает число
-            div = div_vec_approx(collocation=self.collocations[i],                  # Коллокация i
-                                 vec_collocation=self.G[:, self.G.shape[1] - 1][i], # Последний посчитаный G в i
-                                 vec=self.G[:, self.G.shape[1] - 1],                # Последний посчитаный G
-                                 collocations=self.collocations,                    # Тензор коллокаций вообще
-                                 squares=self.squares,                              # Вектор площадей
-                                 jmax=self.total_number_of_frames,                  # Количество разбиений
-                                 eps=2 * self.max_d,                                # 2 диаметра
-                                 appr_degree=self.div_approx,                       # Степень аппроксимации
-                                 grad_Function=gradient_vec)                        # Функция подсчёта градиента
+            div = -1.0 * div_vec_approx(collocation=self.collocations[i],                  # Коллокация i
+                                        vec_collocation=self.G[:, self.G.shape[1] - 1][i], # Последний посчитаный G в i
+                                        vec=self.G[:, self.G.shape[1] - 1],                # Последний посчитаный G
+                                        collocations=self.collocations,                    # Тензор коллокаций вообще
+                                        squares=self.squares,                              # Вектор площадей
+                                        jmax=self.total_number_of_frames,                  # Количество разбиений
+                                        eps=2 * self.max_d,                                # 2 диаметра
+                                        appr_degree=self.div_approx,                       # Степень аппроксимации
+                                        grad_Function=gradient_vec)                        # Функция подсчёта градиента
             new_P.append(div)   # Конкатенация в список
         # Массив np.array размером N x 1
         new_P = np.array(new_P).reshape((self.total_number_of_frames, 1))

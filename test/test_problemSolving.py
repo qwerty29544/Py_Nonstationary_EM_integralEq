@@ -26,12 +26,14 @@ def test_time_index_between():
     assert test_object.time_index_between(-0.9)[1] == np.array(-1)
     assert test_object.time_index_between(0)[1] == np.array(0)
 
+    ps.proportion_linear()
 
 def test_time_index():
     test_object = ps.ProblemSolving(0.5, 4, 16)
     assert test_object.time_index(3) == 6
     assert test_object.time_index(-1) == -2
     assert test_object.time_index(0) == 0
+    test_object.time_index()
 
 
 def test_get_Q_element():
@@ -39,3 +41,12 @@ def test_get_Q_element():
     assert test_object.get_Q_element(-1.4, 5) == 0.0
     assert test_object.get_Q_element(16, 10) == 0.0
     assert test_object.get_Q_element(0.5, 4) == 0
+
+def test_comp_next_euler():
+    vec_plus1 = np.array([8, 4, 5])
+    vec_minus1 = np.array([1, 3, 4])
+    delta = 4
+    vec_integral = np.array([0.875, 0.125, 0.125])
+    assert np.all(ps.component_next_euler(vec_integral, vec_minus1, delta) == vec_plus1)
+
+test_comp_next_euler()
