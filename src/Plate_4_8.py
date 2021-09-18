@@ -1,7 +1,11 @@
 from integral import integrate_func
-from G_functions import G1_func, G2_func, G3_func, integr_G3
+from G_functions import G1_func, G2_func
 from figure import Figure
 import compute_coeffs
+import os
+from envir_paths import *
+
+create_base_proj_structure()
 
 
 plate_12_12 = Figure("d:\\Python\\Py_Nonstationary_EM_integralEq\\figures\\plate_12_12.dat")
