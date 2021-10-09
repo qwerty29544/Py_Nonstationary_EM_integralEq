@@ -1,5 +1,6 @@
 import numpy as np
 
+
 def div_vec_approx(collocation,         # Точка коллокации  x[3]
                    vec_collocation,     # Значение вектора под дивергенцией в точке коллокации gx[3]
                    vec,                 # Весь вектор под дивергенцией g(x_i, t_{n+1}) g[N][3]

@@ -1,5 +1,7 @@
 import numpy as np
 from divergence_approx import div_vec_approx, gradient_vec
+from envir_paths import *
+import os
 
 
 def f_function(rho, D):
@@ -57,7 +59,7 @@ class Charge:
 
         # Индексная зависимость массивов Q, P, D в каждой точке коллокации
         self.indexes_upper = np.array(np.ceil(self.tau / time_step), dtype='int32')
-        self.indexes_lower = self.indexes_upper + 1
+        self.indexes_lower = np.array(np.floor(self.tau / time_step), dtype='int32')
 
         self.current_time = 1  # Текущий счётчик индекса времени
 
@@ -236,6 +238,8 @@ class Charge:
             # Вектор правой части для каждой i-ой точки коллокации
             F = f_function(3 * 1e8 * self.timeline_vec[self.current_time] - self.collocations[i][2], 1)
             f_vec = self.orientation * F
+            if (self.current_time == 1):
+                print(f_vec)
             # Считаем D на шаге
             d_step.append(list(
                 (-np.cross(np.cross(self.norms[i], S_step[i]), self.norms[i]) + np.cross(f_vec, self.norms[i])) /
@@ -246,7 +250,7 @@ class Charge:
         # Конкатенация D и логгирование в файл нового шага
         self.D = np.concatenate((self.D, d_step), axis=1)
         print("D computes! on step " + str(self.current_time))
-        file = "d:\\Python\\MaxwellIntegralEq\\logs\\plate_12_12\\D\\plate_12_12_step_" + str(self.current_time) + ".dat"
+        file = os.path.join(LOGS_PATH, "plate_24_24", "D", "plate_24_24_step_" + str(self.current_time) + ".dat")
         self.write_step_D_file(tensor=d_step.reshape((self.total_number_of_frames, 3)),
                                filename=file)
 
@@ -260,7 +264,7 @@ class Charge:
         self.G = np.concatenate((self.G, new_G), axis=1)
         # Логгирование и запись в файл
         print("G computes! on step " + str(self.current_time))
-        file = "d:\\Python\\MaxwellIntegralEq\\logs\\plate_12_12\\G\\plate_12_12_step_" + str(self.current_time) + ".dat"
+        file = os.path.join(LOGS_PATH, "plate_24_24", "G", "plate_24_24_step_" + str(self.current_time) + ".dat")
         self.write_step_D_file(tensor=new_G.reshape((self.total_number_of_frames, 3)),
                                filename=file)
 
@@ -284,7 +288,7 @@ class Charge:
         self.P = np.concatenate((self.P, new_P), axis=1)
         # Логгирование и запись в файл
         print("P computes! on step " + str(self.current_time))
-        file = "d:\\Python\\MaxwellIntegralEq\\logs\\plate_12_12\\P\\plate_12_12_step_" + str(self.current_time) +".dat"
+        file = os.path.join(LOGS_PATH, "plate_24_24", "P", "plate_24_24_step_" + str(self.current_time) + ".dat")
         self.write_step_Q_file(new_P[:, 0], file)
 
         # Подсчёт нового вектора Q (N x 1)
@@ -293,7 +297,7 @@ class Charge:
         self.Q = np.concatenate((self.Q, new_Q.reshape((self.total_number_of_frames, 1))), axis=1)
         # Логгирование и запись в файл
         print("Q computes! on step " + str(self.current_time))
-        file = "d:\\Python\\MaxwellIntegralEq\\logs\\plate_12_12\\Q\\plate_12_12_step_" + str(self.current_time) +".dat"
+        file = os.path.join(LOGS_PATH, "plate_24_24", "Q", "plate_24_24_step_" + str(self.current_time) + ".dat")
         self.write_step_Q_file(new_Q, file)
 
         # Шаг во времени

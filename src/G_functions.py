@@ -8,12 +8,11 @@ import customalgebra as ca                  # Собственные функц�
 def G3_func(x, y, rb):
     zr = 1e-12
     r = np.sqrt((x - y) @ np.conj(x - y))
-    c = 3 * 1e8
     if r >= rb:
-        result = - 1 / r * (1 / (c ** 2))
+        result = - 1 / r
     elif r >= zr:
         t = r / rb
-        result = - 1 / r * (3 * t ** 2 - 2 * t ** 3) * (1 / (c ** 2))
+        result = - 1 / r * (3 * t ** 2 - 2 * t ** 3)
     else:
         result = 0.0
     return result
@@ -39,12 +38,11 @@ def G2_func(x, y, rb):
 def G1_func(x, y, rb):
     zr = 1e-12
     r = np.sqrt((x - y) @ np.conj(x - y))
-    c = 3 * 1e8
     if r >= rb:
-        result = (x - y) * (1 / r) * (1 / c)
+        result = (x - y) * (1 / r)
     elif r >= zr:
         t = r / rb
-        result = (x - y) * (1 / r) * (3 * t ** 2 - 2 * t ** 3) * (1 / c)
+        result = (x - y) * (1 / r) * (3 * t ** 2 - 2 * t ** 3)
     else:
         result = np.zeros(3)
     return result
@@ -58,7 +56,10 @@ def integr_G3(frame, point, num_of_frame, num_of_collocation, *args):
         for i in range(4):
             AB = frame[(i + 1) % 4] - frame[i]
             # Поворот на Пи относительно срединного перпендикуляра
-            H = ca.rotation_XYZ(point=point, vector_begin=(point + frame[i]) / 2, vector_end=(point + frame[(i + 1) % 4]) / 2, theta=np.pi)
+            H = ca.rotation_XYZ(point=point,
+                                vector_begin=(point + frame[i]) / 2,
+                                vector_end=(point + frame[(i + 1) % 4]) / 2,
+                                theta=np.pi)
             mod_OH = ca.L2(H - point)
             HA = frame[i] - H
             HB = frame[(i + 1) % 4] - H

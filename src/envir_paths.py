@@ -1,6 +1,6 @@
 import os
 
-PATH_TO_PROJECT = os.path.join(os.getcwd(), "..")
+PATH_TO_PROJECT = os.path.dirname(os.getcwd())
 FIGURES_PATH = os.path.join(PATH_TO_PROJECT, "figures")
 COEFFS_PATH = os.path.join(PATH_TO_PROJECT, "coeffs")
 LOGS_PATH = os.path.join(PATH_TO_PROJECT, "logs")

@@ -7,14 +7,15 @@ from envir_paths import *
 
 create_base_proj_structure()
 
-N = [16, 24, 32, 40, 48, 56, 64, 72, 80, 100]
+N = [48, 56, 64, 72, 80, 100]
 list_of_figures = []
 for n in N:
-    figure = "_".join(["plate", n, n])
+    figure = "_".join(["plate", str(n), str(n)])
     list_of_figures.append(figure)
 
 for fig in list_of_figures:
     plate = Figure(os.path.join(FIGURES_PATH, fig + ".dat"))
+    os.mkdir(os.path.join(COEFFS_PATH, fig))
     coeffs_G1 = compute_coeffs.compute_coeffs(frame=plate.frames[0],
                                               collocation=plate.collocations[0],
                                               number_of_frames=plate.total_frames_in_objects[0],
