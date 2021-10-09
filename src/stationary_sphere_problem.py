@@ -37,7 +37,8 @@ print(K_reg.shape)
 for i in range(N):
     for j in range(N):
         if i == j:
-            K_reg[i, j] = 0
+            K_reg[i, j] = 1 / (4 * np.pi) * G_functions.integr_G3(frame=frames[j], point=colloc[i],
+                                                                  num_of_frame=i, num_of_collocation=j)
         else:
             K_reg[i, j] = 1/(4*np.pi) * 1/colloc_dist[i, j] * squares[j]
 

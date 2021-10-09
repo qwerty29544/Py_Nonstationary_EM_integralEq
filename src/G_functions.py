@@ -54,28 +54,31 @@ def integr_G3(frame, point, num_of_frame, num_of_collocation, *args):
         # Треугольник OAB - O точка центра рамки
         result = 0
         for i in range(4):
-            AB = frame[(i + 1) % 4] - frame[i]
-            # Поворот на Пи относительно срединного перпендикуляра
-            H = ca.rotation_XYZ(point=point,
-                                vector_begin=(point + frame[i]) / 2,
-                                vector_end=(point + frame[(i + 1) % 4]) / 2,
-                                theta=np.pi)
-            mod_OH = ca.L2(H - point)
-            HA = frame[i] - H
-            HB = frame[(i + 1) % 4] - H
+            if list(frame[(i + 1) % 4]) == list(frame[i]):
+                square = 0
+            else:
+                AB = frame[(i + 1) % 4] - frame[i]
+                # Поворот на Пи относительно срединного перпендикуляра
+                H = ca.rotation_XYZ(point=point,
+                                    vector_begin=(point + frame[i]) / 2,
+                                    vector_end=(point + frame[(i + 1) % 4]) / 2,
+                                    theta=np.pi)
+                mod_OH = ca.L2(H - point)
+                HA = frame[i] - H
+                HB = frame[(i + 1) % 4] - H
 
-            alpha_min = np.arctan(ca.L2(HA) / mod_OH)
-            alpha_max = np.arctan(ca.L2(HB) / mod_OH)
+                alpha_min = np.arctan(ca.L2(HA) / mod_OH)
+                alpha_max = np.arctan(ca.L2(HB) / mod_OH)
 
-            # Решение какой угол отрицательный
-            if (HA @ AB) <= 0:
-                alpha_min = -alpha_min
+                # Решение какой угол отрицательный
+                if (HA @ AB) <= 0:
+                    alpha_min = -alpha_min
 
-            if (HB @ AB) <= 0:
-                alpha_max = -alpha_max
+                if (HB @ AB) <= 0:
+                    alpha_max = -alpha_max
 
-            square = mod_OH * (np.log(np.abs((1 + np.tan(alpha_max / 2))/(1 - np.tan(alpha_max / 2)))) -
-                               np.log(np.abs((1 + np.tan(alpha_min / 2))/(1 - np.tan(alpha_min / 2)))))
+                square = mod_OH * (np.log(np.abs((1 + np.tan(alpha_max / 2))/(1 - np.tan(alpha_max / 2)))) -
+                                   np.log(np.abs((1 + np.tan(alpha_min / 2))/(1 - np.tan(alpha_min / 2)))))
             result += square
     else:
         result = 0
