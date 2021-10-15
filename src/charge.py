@@ -1,16 +1,18 @@
+import numba
 import numpy as np
-from divergence_approx import div_vec_approx, gradient_vec
+from divergence_approx import div_vec_approx, gradient_vec, div_surface
 from envir_paths import *
 import os
 
 
-def f_function(rho, D):
-    if rho == 0 or rho == D:
+@numba.jit(nopython=True, nogil=True)
+def f_function(params):
+    if params[0] == 0 or params[0] == params[1]:
         return 0
-    if np.abs(1 / rho * (D - rho)) >= 20:
+    if np.abs(params[1] / (params[0] * (params[1] - params[0]))) >= 20:
         return 0
-    if D > rho > 0:
-        return np.exp(-((1) / (rho * (D - rho))))
+    if params[1] > params[0] > 0:
+        return np.exp(-((params[1]) / (params[0] * (params[1] - params[0]))))
     else:
         return 0
 
@@ -28,6 +30,7 @@ class Charge:
                  frames,
                  squares,
                  collocations,
+                 neighbors,
                  total_number_of_frames,
                  div_approx=3,
                  orientation=None):
@@ -62,6 +65,7 @@ class Charge:
         self.indexes_lower = np.array(np.floor(self.tau / time_step), dtype='int32')
 
         self.current_time = 1  # Текущий счётчик индекса времени
+        self.neighbors = neighbors          # Индексы соседей для ячейки
 
     def _alpha_beta_(self,
                      time_k,  # Время T(k)
@@ -236,10 +240,8 @@ class Charge:
         # Вычисление каждого i-го D
         for i in range(self.total_number_of_frames):
             # Вектор правой части для каждой i-ой точки коллокации
-            F = f_function(3 * 1e8 * self.timeline_vec[self.current_time] - self.collocations[i][2], 1)
+            F = f_function((self.timeline_vec[self.current_time] - self.collocations[i][2], 5))
             f_vec = self.orientation * F
-            if (self.current_time == 1):
-                print(f_vec)
             # Считаем D на шаге
             d_step.append(list(
                 (-np.cross(np.cross(self.norms[i], S_step[i]), self.norms[i]) + np.cross(f_vec, self.norms[i])) /
@@ -268,22 +270,30 @@ class Charge:
         self.write_step_D_file(tensor=new_G.reshape((self.total_number_of_frames, 3)),
                                filename=file)
 
-        # Вычисление P на шаге
-        new_P = []
-        for i in range(self.total_number_of_frames):
-            # Дивергенция на каждой точке коллокации возвращает число
-            div = -1.0 * div_vec_approx(collocation=self.collocations[i],                  # Коллокация i
-                                        vec_collocation=self.G[:, self.G.shape[1] - 1][i], # Последний посчитаный G в i
-                                        vec=self.G[:, self.G.shape[1] - 1],                # Последний посчитаный G
-                                        collocations=self.collocations,                    # Тензор коллокаций вообще
-                                        squares=self.squares,                              # Вектор площадей
-                                        jmax=self.total_number_of_frames,                  # Количество разбиений
-                                        eps=2 * self.max_d,                                # 2 диаметра
-                                        appr_degree=self.div_approx,                       # Степень аппроксимации
-                                        grad_Function=gradient_vec)                        # Функция подсчёта градиента
-            new_P.append(div)   # Конкатенация в список
-        # Массив np.array размером N x 1
-        new_P = np.array(new_P).reshape((self.total_number_of_frames, 1))
+
+# ---------------------------------------------------------------------------------------------------------------------------------
+        # # Вычисление P на шаге
+        # new_P = []
+        # for i in range(self.total_number_of_frames):
+        #     # Дивергенция на каждой точке коллокации возвращает число
+        #     div = -1.0 * div_vec_approx(collocation=self.collocations[i],                  # Коллокация i
+        #                                 vec_collocation=self.G[:, self.G.shape[1] - 1][i], # Последний посчитаный G в i
+        #                                 vec=self.G[:, self.G.shape[1] - 1],                # Последний посчитаный G
+        #                                 collocations=self.collocations,                    # Тензор коллокаций вообще
+        #                                 squares=self.squares,                              # Вектор площадей
+        #                                 jmax=self.total_number_of_frames,                  # Количество разбиений
+        #                                 eps=2 * self.max_d,                                # 2 диаметра
+        #                                 appr_degree=self.div_approx,                       # Степень аппроксимации
+        #                                 grad_Function=gradient_vec)                        # Функция подсчёта градиента
+        #     new_P.append(div)   # Конкатенация в список
+        # # Массив np.array размером N x 1
+        # new_P = np.array(new_P).reshape((self.total_number_of_frames, 1))
+# -----------------------------------------------------------------------------------------------------------------------------------
+        new_P = div_surface(vec=self.G[:, self.G.shape[1] - 1],
+                            frames=self.frames,
+                            neighbors_inds=self.neighbors,
+                            squares=self.squares,
+                            norms=self.norms).reshape((self.total_number_of_frames, 1))
         # Конкатенация с (N x t)
         self.P = np.concatenate((self.P, new_P), axis=1)
         # Логгирование и запись в файл

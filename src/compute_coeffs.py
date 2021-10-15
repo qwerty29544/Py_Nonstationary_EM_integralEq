@@ -48,7 +48,7 @@ def compute_G3_coefficients(frame,                   # Все рамки объ�
     for i in range(number_of_frames):
         for j in range(number_of_frames):
             if i == j:
-                coeffs[i][j] = -1 * integr_G3(frame[j], collocation[i], j, i) / (3 * 1e08)**2
+                coeffs[i][j] = integr_G3(frame[j], collocation[i], j, i)
             else:
                 coeffs[i][j] = integration_method(collocation[i], frame[j], n_vertex, slices, G3_func, 1, rb)
     coeffs.reshape((number_of_frames, number_of_frames))

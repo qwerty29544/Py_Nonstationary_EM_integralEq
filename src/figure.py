@@ -259,4 +259,4 @@ class Figure:
                 print("\t\tIn module #" + str(module + 1) + " we have " + str(self.number_of_frames[obj][module]) + " frames")
 
     def get_Curant(self):
-        return min(self.min_R) / (3 * 1e8)
+        return min(self.min_R)
