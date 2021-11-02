@@ -36,10 +36,10 @@ def f_function(params: List[float]) -> float:
     """
     if params[0] == 0. or params[0] == params[1]:
         return 0.
-    if np.abs(1. / params[0] * (params[1] - params[0])) >= 20.:
+    if np.abs(params[1]**2 / params[0] * (params[1] - params[0])) >= 20.:
         return 0.
     if params[1] > params[0] > 0.:
-        return np.exp(-(1. / (params[0] * (params[1] - params[0]))))
+        return np.exp(-(params[1]**2 / (params[0] * (params[1] - params[0]))))
     else:
         return 0.
 
@@ -93,7 +93,7 @@ def component_next_euler2(vec_integral: np.array = None,
                           vec_cur_3: np.array = None,
                           delta: float = 0.1,
                           **kwargs) -> np.array:
-    return 8 * vec_cur - 8 * vec_cur_2 + vec_cur_3 - 12 * delta * vec_integral_1
+    return 8 * vec_cur - 8 * vec_cur_2 + vec_cur_3 + 12 * delta * vec_integral_1
 
 
 @numba.jit(nopython=True, parallel=True, nogil=True)
@@ -257,7 +257,7 @@ class ProblemSolving:
         self.collocations = collocations
         self.norms = norms
         self.neighbours = neighbours
-        self.tau = collocation_distances / speed_of_light  # Вычисление параметров запаздывания по объекту
+        self.tau = collocation_distances
         self.coefficients_G1 = coefficients_G1
         self.coefficients_G2 = coefficients_G2
         self.coefficients_G3 = coefficients_G3

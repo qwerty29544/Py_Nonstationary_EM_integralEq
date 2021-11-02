@@ -1,0 +1,20 @@
+{
+  "paths": {
+    "path_coeffs": "C:\\Users\\MariaRemark\\PycharmProjects\\Py_Nonstationary_EM_integralEq\\coeffs",
+    "path_figures": "C:\\Users\\MariaRemark\\PycharmProjects\\Py_Nonstationary_EM_integralEq\\figures",
+    "path_grids": "C:\\Users\\MariaRemark\\PycharmProjects\\Py_Nonstationary_EM_integralEq\\grids",
+    "path_logs": "C:\\Users\\MariaRemark\\PycharmProjects\\Py_Nonstationary_EM_integralEq\\logs",
+    "figure_file": "C:\\Users\\MariaRemark\\PycharmProjects\\Py_Nonstationary_EM_integralEq\\figures\\plate_20_20.dat",
+    "figure_logs": "C:\\Users\\MariaRemark\\PycharmProjects\\Py_Nonstationary_EM_integralEq\\logs\\plate_20_20",
+    "figure_coeffs": "C:\\Users\\MariaRemark\\PycharmProjects\\Py_Nonstationary_EM_integralEq\\coeffs\\plate_20_20"
+  },
+  "options": {
+    "E0": [0, 1, 0],
+    "k0": [0, 0, 1],
+    "D": 10.0,
+    "d": 0,
+    "speed_of_light": 1,
+    "time_step": 0.002,
+    "max_time": 1000
+  }
+}

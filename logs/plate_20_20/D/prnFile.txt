@@ -1,2 +1,0 @@
-
-Err::CMainFrame::OnReadPressForming - if(n != cnt)

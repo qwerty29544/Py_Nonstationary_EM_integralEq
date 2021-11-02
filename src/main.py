@@ -23,43 +23,42 @@ if __name__ == '__main__':
     # print(np.sum(G3_coeff, axis=1) * (-1) * (9e16))
     # print("zero axis")
     # print(np.sum(G3_coeff, axis=0) * (-1) * (9e16))
-    create_base_proj_structure()
-    figure_plate_20_20 = figure.Figure(os.path.join(FIGURES_PATH, "plate_20_20.dat"))
-    # # Загрузка коэффициентов
-    G1_load = compute_coeffs.coeffs_load(os.path.join(COEFFS_PATH, "plate_20_20", "G1_plate_20_20.txt"))
-    G2_load = compute_coeffs.coeffs_load(os.path.join(COEFFS_PATH, "plate_20_20", "G2_plate_20_20.txt"))
-    G3_load = compute_coeffs.coeffs_load(os.path.join(COEFFS_PATH, "plate_20_20", "G3_plate_20_20.txt"))
+    # create_base_proj_structure()
+    config = Config("C:\\Users\\MariaRemark\\PycharmProjects\\Py_Nonstationary_EM_integralEq\\config.json")
+    fig = figure.Figure(config.figure_file)
+    # Загрузка коэффициентов
+    G1_load = compute_coeffs.coeffs_load(os.path.join(config.figure_coeffs, "G1_plate_20_20.txt"))
+    G2_load = compute_coeffs.coeffs_load(os.path.join(config.figure_coeffs, "G2_plate_20_20.txt"))
+    G3_load = compute_coeffs.coeffs_load(os.path.join(config.figure_coeffs, "G3_plate_20_20.txt"))
     G3_load = G3_load.reshape((G3_load.shape[0], G3_load.shape[1]))
-    # Шаг по времени
-    curant_ts = figure_plate_20_20.get_Curant()/5
-    # # Максимальное время
-    max_time = 3
-    
+
+    if config.time_step > fig.get_Curant():
+        assert False
+
     print()
-    print("steps " + str(max_time / curant_ts))
+    print("steps " + str(config.max_time / config.time_step))
     print()
-    # #
-    figure_plate_20_20.print_details()
-    #
-    # # Инициализация класса просчёта схемы
-    Charge_1 = charge.Charge(time_step=curant_ts,
-                             max_time=max_time,
-                             max_diameter=figure_plate_20_20.max_diameter[0],
+
+    fig.print_details()
+
+    # Инициализация класса просчёта схемы
+    Charge_1 = charge.Charge(config_path=config.config_path,
+                             max_diameter=fig.max_diameter[0],
                              G1=G1_load,
                              G2=G2_load,
                              G3=G3_load,
-                             tau=figure_plate_20_20.collocation_distances[0],
-                             norms=figure_plate_20_20.norms[0],
-                             frames=figure_plate_20_20.frames[0],
-                             squares=figure_plate_20_20.squares[0],
-                             collocations=figure_plate_20_20.collocations[0],
-                             neighbors=figure_plate_20_20.neighbours[0],
-                             total_number_of_frames=figure_plate_20_20.total_frames_in_objects[0],
-                             div_approx=3)
-    #
-    # # Шаги во времени
-    for i in range(0, int(np.ceil(max_time/curant_ts))):
+                             tau=fig.collocation_distances[0],
+                             norms=fig.norms[0],
+                             frames=fig.frames[0],
+                             squares=fig.squares[0],
+                             collocations=fig.collocations[0],
+                             neighbors=fig.neighbours[0],
+                             total_number_of_frames=fig.total_frames_in_objects[0])
+
+    # Шаги во времени
+    for i in range(0, int(np.ceil(config.max_time/config.time_step))):
         Charge_1.step_in_time()
+
 
 
 

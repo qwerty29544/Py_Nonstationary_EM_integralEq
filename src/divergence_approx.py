@@ -66,10 +66,10 @@ def div_element_surface(vec_element_k: np.array,
     result = 0
     m = frame.shape[0]
     for i in range(m):
-        vec_prod = np.cross((frame[(i+1) % m] - frame[i]), norm)
-        sum_vecs = (vec_element_k + neighbors_vecs[i]) / 2.
-        dot_prod = sum_vecs @ vec_prod
-        result += dot_prod
+        vec_prod = np.cross((frame[(i+1) % m] - frame[i]), norm)  # 1. Векторное произведение стороны на нормаль
+        sum_vecs = (vec_element_k + neighbors_vecs[i]) / 2.       # 2. Сумма данного вектора и вектора в соседней ячейке
+        dot_prod = sum_vecs @ vec_prod                            # Скалярное произведение 2 и 1
+        result += dot_prod                                        # Складируем результат
     return result / square
 
 

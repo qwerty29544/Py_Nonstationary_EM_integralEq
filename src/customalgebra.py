@@ -2,7 +2,7 @@ import numpy as np
 import numba
 
 
-@numba.jit(nopython=True, parallel=True, nogil=True)
+@numba.jit(numba.float64(numba.float64[:]), nopython=True, nogil=True)
 def L2(vector):
     return np.sqrt(vector @ vector)
 
